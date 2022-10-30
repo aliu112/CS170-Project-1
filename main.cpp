@@ -39,20 +39,25 @@ int main(){
         cout << "Please enter your puzzle. Please use 0 to represent the blank. Please enter the numbers with a space inbetween\n";
         string puzzleInput;
         cout << "Enter the first row: ";
-        cin >> puzzleInput;
+        cin.ignore();
+        getline(cin,puzzleInput);
         puzzle.at(0) = int(puzzleInput.at(0)) -48;
         puzzle.at(1) = int(puzzleInput.at(2)) -48;
-        puzzle.at(2) = int(puzzleInput.at(4)) -48 ;
+        puzzle.at(2) = int(puzzleInput.at(4)) -48;
+        puzzleInput="";
         cout << "Enter the second row: ";
-        cin >> puzzleInput;
+        getline(cin,puzzleInput);
         puzzle.at(3) = int(puzzleInput.at(0)) -48;
-        puzzle.at(4) = int(puzzleInput.at(2)) -48 ;
+        puzzle.at(4) = int(puzzleInput.at(2)) -48;
         puzzle.at(5) = int(puzzleInput.at(4)) -48;
+        puzzleInput="";
         cout << "Enter the third row: ";
-        cin >> puzzleInput; 
+        getline(cin,puzzleInput);
         puzzle.at(6) = int(puzzleInput.at(0)) -48;
         puzzle.at(7) = int(puzzleInput.at(2)) -48;
         puzzle.at(8) = int(puzzleInput.at(4)) -48;
         printPuzzle(puzzle);
     }
+
+
 }
