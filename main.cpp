@@ -4,6 +4,13 @@
 
 using namespace std;
 
+//making struct to keep track of state which includes puzzle and costs of g(n) and h(n)
+struct state{
+    vector<int> puzzle;
+    int g_n;
+    int h_n;
+};
+
 //checks to see if the given puzzle has reached the end state
 bool CheckIfFinished(vector<int> puzzle){
     vector<int> finalState {1,2,3,4,5,6,7,8,9,0};
@@ -17,6 +24,21 @@ bool CheckIfFinished(vector<int> puzzle){
     return isFinished; 
 }
 
+//calcuating misplaced tiles heuristic
+int CountingMisplacedTiles(vector<int> puzzle){
+    int cost =0;
+    for(int i=0; i<9; i++){ //checks how many tiles are out of place
+        if(puzzle.at(i) != i+1){
+            if(puzzle.at(i) == 0) //if that misplaced tile is 0 don't increase cost because we don't count a misplaced zero for this heuristic
+            {
+                break;
+            }
+            ++cost;
+        }
+    }
+    return cost;
+}
+
 void printPuzzle(vector<int> puzzle){
     cout << "[" << puzzle.at(0) << ", " << puzzle.at(1) << ", " << puzzle.at(2) << "]\n";
     cout << "[" << puzzle.at(3) << ", " << puzzle.at(4) << ", " << puzzle.at(5) << "]\n";
@@ -27,9 +49,9 @@ void printPuzzle(vector<int> puzzle){
 int main(){
     //1D array that holds the puzzle values
     //Chose a 1D array because it makes it easier for me to piece everything together
-    vector<int> puzzle(9);
-    int h_cost =0;
-    int g_cost =0;
+    state newPuzzle;
+    newPuzzle.puzzle = vector<int> (9);
+
     // cout <<"vector" << puzzle.size();
 
     cout << "8-puzzle Solver Program\n";
@@ -39,17 +61,17 @@ int main(){
     cin >> input;
     //creates default puzzle
     if(input == 1){
-        puzzle.at(0)= 1;
-        puzzle.at(1)= 2;
-        puzzle.at(2)= 3;
-        puzzle.at(3)= 4;
-        puzzle.at(4)= 5;
-        puzzle.at(5)= 6;
-        puzzle.at(6)= 0;
-        puzzle.at(7)= 7;
-        puzzle.at(8)= 8;
+        newPuzzle.puzzle.at(0)= 1;
+        newPuzzle.puzzle.at(1)= 2;
+        newPuzzle.puzzle.at(2)= 3;
+        newPuzzle.puzzle.at(3)= 4;
+        newPuzzle.puzzle.at(4)= 5;
+        newPuzzle.puzzle.at(5)= 6;
+        newPuzzle.puzzle.at(6)= 0;
+        newPuzzle.puzzle.at(7)= 7;
+        newPuzzle.puzzle.at(8)= 8;
 
-        printPuzzle(puzzle);
+        printPuzzle(newPuzzle.puzzle);
     }
     //gets user input to create the puzzle
     else if(input == 2 ){
@@ -58,22 +80,22 @@ int main(){
         cout << "Enter the first row: ";
         cin.ignore();
         getline(cin,puzzleInput);
-        puzzle.at(0) = int(puzzleInput.at(0)) -48; //gets input as a string and converts to int
-        puzzle.at(1) = int(puzzleInput.at(2)) -48;
-        puzzle.at(2) = int(puzzleInput.at(4)) -48;
+        newPuzzle.puzzle.at(0) = int(puzzleInput.at(0)) -48; //gets input as a string and converts to int
+        newPuzzle.puzzle.at(1) = int(puzzleInput.at(2)) -48;
+        newPuzzle.puzzle.at(2) = int(puzzleInput.at(4)) -48;
         puzzleInput="";
         cout << "Enter the second row: ";
         getline(cin,puzzleInput);
-        puzzle.at(3) = int(puzzleInput.at(0)) -48;
-        puzzle.at(4) = int(puzzleInput.at(2)) -48;
-        puzzle.at(5) = int(puzzleInput.at(4)) -48;
+        newPuzzle.puzzle.at(3) = int(puzzleInput.at(0)) -48;
+        newPuzzle.puzzle.at(4) = int(puzzleInput.at(2)) -48;
+        newPuzzle.puzzle.at(5) = int(puzzleInput.at(4)) -48;
         puzzleInput="";
         cout << "Enter the third row: ";
         getline(cin,puzzleInput);
-        puzzle.at(6) = int(puzzleInput.at(0)) -48;
-        puzzle.at(7) = int(puzzleInput.at(2)) -48;
-        puzzle.at(8) = int(puzzleInput.at(4)) -48;
-        printPuzzle(puzzle);
+        newPuzzle.puzzle.at(6) = int(puzzleInput.at(0)) -48;
+        newPuzzle.puzzle.at(7) = int(puzzleInput.at(2)) -48;
+        newPuzzle.puzzle.at(8) = int(puzzleInput.at(4)) -48;
+        printPuzzle(newPuzzle.puzzle);
     }
 
     cout << "Select algorithm: \n";
