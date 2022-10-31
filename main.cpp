@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <map>
 #include <algorithm>
 
 using namespace std;
@@ -9,9 +10,9 @@ using namespace std;
 //making struct to keep track of state which includes puzzle and costs of g(n) and h(n)
 struct puzzleNode{
     vector<int> puzzle;
-    int g_n;
-    int h_n;
-    int f_n;
+    int g_n=0;
+    int h_n=0;
+    int f_n=0;
 
     //overloaded operator to make priority queue a min heap 
     //again used https://medium.com/@taohidulii/min-priority-queue-in-c-7e64bd01359c#:~:text=Save-,Min%20priority_queue%20in%20C%2B%2B,(returns%20the%20largest%20element).&text=Here%2C%20we're%20getting%20the,by%20applying%20some%20interesting%20tricks.
@@ -24,6 +25,12 @@ struct puzzleNode{
         }else { //else pick the lowest cost node
             return f_n > a.f_n;
         }
+    }
+
+    puzzleNode(){
+        int g_n=0;
+        int h_n=0;
+        int f_n=0;
     }
 
 };
@@ -63,6 +70,7 @@ int CountingMisplacedTiles(vector<int> puzzle){
 
 //
 bool isInBounds(int zeroIndex, string direction){
+    cout << "INsidfe isinbounds\n"; 
     if(direction == "up"){
         if(zeroIndex == 0 || zeroIndex == 1 || zeroIndex == 2)
         {
@@ -99,7 +107,17 @@ bool isInBounds(int zeroIndex, string direction){
     return false;
 }
 
-void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoType){
+void printPuzzle(vector<int> puzzle){
+    cout << "[" << puzzle.at(0) << ", " << puzzle.at(1) << ", " << puzzle.at(2) << "]\n";
+    cout << "[" << puzzle.at(3) << ", " << puzzle.at(4) << ", " << puzzle.at(5) << "]\n";
+    cout << "[" << puzzle.at(6) << ", " << puzzle.at(7) << ", " << puzzle.at(8) << "]\n";
+
+}
+
+
+void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoType, map<vector<int>,int> &visited){
+    visited[chosenNode.puzzle] = 1; // mark node as visited
+
     int zeroIndex=0; 
     //finds the index that holds zero so that we can decide where to move
     for(int i=0; i<9; ++i){ 
@@ -108,11 +126,16 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
             zeroIndex = i;
         }
     }
+    cout << zeroIndex << endl;
 
     //making new puzzle that moves the blank space up
     if(isInBounds(zeroIndex, "up")){
         //NOTE TO SELF: check to see if the values correctly copy over
-        puzzleNode newPuzzle = chosenNode;
+        puzzleNode newPuzzle;
+        newPuzzle.puzzle = chosenNode.puzzle;
+        newPuzzle.g_n = chosenNode.g_n;
+        newPuzzle.h_n = chosenNode.h_n;
+        newPuzzle.f_n = chosenNode.f_n;
         swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex-3));
         if(algoType ==0){
             newPuzzle.g_n += 1;
@@ -128,13 +151,23 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
             newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        pq.push(newPuzzle);
+        if (! (visited.find(newPuzzle.puzzle) != visited.end() )) {
+            pq.push(newPuzzle);
+        }
+        
     }
 
     //making new puzzle that moves the blank space down
     if(isInBounds(zeroIndex, "down")){
-        puzzleNode newPuzzle = chosenNode;
+        puzzleNode newPuzzle;
+        newPuzzle.puzzle = chosenNode.puzzle;
+        newPuzzle.g_n = chosenNode.g_n;
+        newPuzzle.h_n = chosenNode.h_n;
+        newPuzzle.f_n = chosenNode.f_n;
         swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex+3));
+
+        // cout << "IN DOWN IF STATEMENT\n" << "h_cost: " << newPuzzle.h_n << "\ng_cost: " << newPuzzle.g_n <<"\n";
+        // printPuzzle(newPuzzle.puzzle);
         if(algoType ==0){
             newPuzzle.g_n += 1;
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
@@ -149,12 +182,22 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
             newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        pq.push(newPuzzle);
+        if (! (visited.find(newPuzzle.puzzle) != visited.end() )) {
+            pq.push(newPuzzle);
+        }
     }
 
     if(isInBounds(zeroIndex, "right")){
-        puzzleNode newPuzzle = chosenNode;
+        puzzleNode newPuzzle;
+        newPuzzle.puzzle = chosenNode.puzzle;
+        newPuzzle.g_n = chosenNode.g_n;
+        newPuzzle.h_n = chosenNode.h_n;
+        newPuzzle.f_n = chosenNode.f_n;
         swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex+1));
+
+        printPuzzle(chosenNode.puzzle);
+        cout << endl;
+        printPuzzle(newPuzzle.puzzle);
         if(algoType ==0){
             newPuzzle.g_n += 1;
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
@@ -169,11 +212,17 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
             newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        pq.push(newPuzzle);
+        if (! (visited.find(newPuzzle.puzzle) != visited.end() )) {
+            pq.push(newPuzzle);
+        }
     }
 
     if(isInBounds(zeroIndex, "left")){
-        puzzleNode newPuzzle = chosenNode;
+        puzzleNode newPuzzle;
+        newPuzzle.puzzle = chosenNode.puzzle;
+        newPuzzle.g_n = chosenNode.g_n;
+        newPuzzle.h_n = chosenNode.h_n;
+        newPuzzle.f_n = chosenNode.f_n;
         swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex-1));
         if(algoType ==0){
             newPuzzle.g_n += 1;
@@ -189,19 +238,15 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
             newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        pq.push(newPuzzle);
+        if (! (visited.find(newPuzzle.puzzle) != visited.end() )) {
+            pq.push(newPuzzle);
+        }
     }
 
 
 
 }
 
-void printPuzzle(vector<int> puzzle){
-    cout << "[" << puzzle.at(0) << ", " << puzzle.at(1) << ", " << puzzle.at(2) << "]\n";
-    cout << "[" << puzzle.at(3) << ", " << puzzle.at(4) << ", " << puzzle.at(5) << "]\n";
-    cout << "[" << puzzle.at(6) << ", " << puzzle.at(7) << ", " << puzzle.at(8) << "]\n";
-
-}
 
 
 
@@ -211,7 +256,7 @@ int main(){
     //Chose a 1D array because it makes it easier for me to piece everything together
     puzzleNode newPuzzle;
     newPuzzle.puzzle = vector<int> (9);
-
+    cout << "g_n: " << newPuzzle.g_n  << "\nh_n: " << newPuzzle.h_n  << "\nf_n: " << newPuzzle.f_n << endl;
     // cout <<"vector" << puzzle.size();
 
     cout << "8-puzzle Solver Program\n";
@@ -268,12 +313,15 @@ int main(){
     //https://medium.com/@taohidulii/min-priority-queue-in-c-7e64bd01359c#:~:text=Save-,Min%20priority_queue%20in%20C%2B%2B,(returns%20the%20largest%20element).&text=Here%2C%20we're%20getting%20the,by%20applying%20some%20interesting%20tricks.
     priority_queue<puzzleNode> pq; //chooses best node to expand
     queue<puzzleNode> orderExpanded; //keeps track of which node is expanded
+    map<vector<int>,int> visited; //used for repeating states https://www.geeksforgeeks.org/map-of-vectors-in-c-stl-with-examples/ 
     pq.push(newPuzzle); 
     bool didFinish = false;
     int maxSize=0;
     while(!pq.empty()){
         int tempSize = pq.size();
         maxSize = max(maxSize, tempSize);
+
+        cout << "maxSize: " << maxSize << endl;
         puzzleNode temp = pq.top();
         pq.pop();
         if(CheckIfFinished(temp.puzzle)){
@@ -285,7 +333,7 @@ int main(){
             didFinish = true;
             break;
         }
-        expandNode(temp,pq, algoInput);
+        expandNode(temp,pq, algoInput,visited);
         if(pq.size() != 0){
             orderExpanded.push(temp);
         }
