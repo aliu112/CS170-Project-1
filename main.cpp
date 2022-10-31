@@ -19,7 +19,7 @@ struct puzzleNode{
     // as a resource to do so
     bool operator< (const puzzleNode & a) const 
     {
-    if(f_n == a.f_n) //if it's a tie, just pick the first node
+        if(f_n == a.f_n) //if it's a tie, just pick the first node
         {
             return g_n > a.g_n;
         }else { //else pick the lowest cost node
@@ -37,7 +37,7 @@ struct puzzleNode{
 
 //checks to see if the given puzzle has reached the end state
 bool CheckIfFinished(vector<int> puzzle){
-    vector<int> finalState {1,2,3,4,5,6,7,8,9,0};
+    vector<int> finalState {1,2,3,4,5,6,7,8,0};
     bool isFinished =true;
     for(int i=0; i<9; i++){
         if( puzzle.at(i) != finalState.at(i) )
@@ -70,7 +70,6 @@ int CountingMisplacedTiles(vector<int> puzzle){
 
 //
 bool isInBounds(int zeroIndex, string direction){
-    cout << "INsidfe isinbounds\n"; 
     if(direction == "up"){
         if(zeroIndex == 0 || zeroIndex == 1 || zeroIndex == 2)
         {
@@ -256,7 +255,7 @@ int main(){
     //Chose a 1D array because it makes it easier for me to piece everything together
     puzzleNode newPuzzle;
     newPuzzle.puzzle = vector<int> (9);
-    cout << "g_n: " << newPuzzle.g_n  << "\nh_n: " << newPuzzle.h_n  << "\nf_n: " << newPuzzle.f_n << endl;
+    // cout << "g_n: " << newPuzzle.g_n  << "\nh_n: " << newPuzzle.h_n  << "\nf_n: " << newPuzzle.f_n << endl;
     // cout <<"vector" << puzzle.size();
 
     cout << "8-puzzle Solver Program\n";
@@ -320,14 +319,12 @@ int main(){
     while(!pq.empty()){
         int tempSize = pq.size();
         maxSize = max(maxSize, tempSize);
-
-        cout << "maxSize: " << maxSize << endl;
         puzzleNode temp = pq.top();
         pq.pop();
         if(CheckIfFinished(temp.puzzle)){
             //Function call to print order of the nodes selected by the algorithm 
             orderExpanded.push(temp);
-            cout << "Solution depth was" << temp.g_n << endl; //we can use g_n for solution depth bc cost of g_n is 1 
+            cout << "Solution depth was " << temp.g_n << endl; //we can use g_n for solution depth bc cost of g_n is 1 
             cout << "Number of nodes expanded: " << orderExpanded.size() << endl;
             cout << "Max queue size: " << maxSize << endl;
             didFinish = true;
