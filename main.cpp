@@ -1,14 +1,31 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <queue>
+#include <algorithm>
 
 using namespace std;
 
 //making struct to keep track of state which includes puzzle and costs of g(n) and h(n)
-struct state{
+struct puzzleNode{
     vector<int> puzzle;
     int g_n;
     int h_n;
+    int f_n;
+
+    //overloaded operator to make priority queue a min heap 
+    //again used https://medium.com/@taohidulii/min-priority-queue-in-c-7e64bd01359c#:~:text=Save-,Min%20priority_queue%20in%20C%2B%2B,(returns%20the%20largest%20element).&text=Here%2C%20we're%20getting%20the,by%20applying%20some%20interesting%20tricks.
+    // as a resource to do so
+    bool operator< (const puzzleNode & a) const 
+    {
+    if(f_n == a.f_n) //if it's a tie, just pick the first node
+        {
+            return g_n > a.g_n;
+        }else { //else pick the lowest cost node
+            return f_n > a.f_n;
+        }
+    }
+
 };
 
 //checks to see if the given puzzle has reached the end state
@@ -22,6 +39,11 @@ bool CheckIfFinished(vector<int> puzzle){
         }
     }
     return isFinished; 
+}
+
+//Thining about hard coding it, can't think of a formula that would work for caluclating manhattan 
+int ManhattanDistnace(vector<int> puzzle ){
+
 }
 
 //calcuating misplaced tiles heuristic
@@ -39,6 +61,18 @@ int CountingMisplacedTiles(vector<int> puzzle){
     return cost;
 }
 
+void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoType){
+    int zeroIndex=0; 
+    //finds the index that holds zero so that we can decide where to move
+    for(int i=0; i<9; ++i){ 
+        if(chosenNode.puzzle.at(i) == 0)
+        {
+            zeroIndex = i;
+        }
+    }
+
+}
+
 void printPuzzle(vector<int> puzzle){
     cout << "[" << puzzle.at(0) << ", " << puzzle.at(1) << ", " << puzzle.at(2) << "]\n";
     cout << "[" << puzzle.at(3) << ", " << puzzle.at(4) << ", " << puzzle.at(5) << "]\n";
@@ -46,10 +80,13 @@ void printPuzzle(vector<int> puzzle){
 
 }
 
+
+
+
 int main(){
     //1D array that holds the puzzle values
     //Chose a 1D array because it makes it easier for me to piece everything together
-    state newPuzzle;
+    puzzleNode newPuzzle;
     newPuzzle.puzzle = vector<int> (9);
 
     // cout <<"vector" << puzzle.size();
@@ -104,6 +141,30 @@ int main(){
     cin >> algoInput;
     
     //general search algo goes below
-
+    //used below link to create min heap with priority queue so I could use it for selecting the lowest cost node
+    //https://medium.com/@taohidulii/min-priority-queue-in-c-7e64bd01359c#:~:text=Save-,Min%20priority_queue%20in%20C%2B%2B,(returns%20the%20largest%20element).&text=Here%2C%20we're%20getting%20the,by%20applying%20some%20interesting%20tricks.
+    priority_queue<puzzleNode> pq; //chooses best node to expand
+    queue<puzzleNode> orderExpanded; //keeps track of which node is expanded
+    pq.push(newPuzzle); 
+    int maxSize=0;
+    bool firstExpansionOccured =false;
+    while(!pq.empty()){
+        int tempSize = pq.size();
+        maxSize = max(maxSize, tempSize);
+        puzzleNode temp = pq.top();
+        pq.pop();
+        if(CheckIfFinished(temp.puzzle)){
+            //Function call to print order of the nodes selected by the algorithm 
+            orderExpanded.push(temp);
+            cout << "Solution depth was" << temp.g_n << endl; //we can use g_n for solution depth bc cost of g_n is 1 
+            cout << "Number of nodes expanded: " << orderExpanded.size() << endl;
+            cout << "Max queue size: " << maxSize << endl;
+        }
+        expandNode(temp,pq, algoInput);
+        if(pq.size() != 0){
+            orderExpanded.push(temp);
+        }
+        
+    }
 
 }
