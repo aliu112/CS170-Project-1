@@ -42,7 +42,7 @@ bool CheckIfFinished(vector<int> puzzle){
 }
 
 //Thining about hard coding it, can't think of a formula that would work for caluclating manhattan 
-int ManhattanDistnace(vector<int> puzzle ){
+int ManhattanDistance(vector<int> puzzle ){
 
 }
 
@@ -61,6 +61,44 @@ int CountingMisplacedTiles(vector<int> puzzle){
     return cost;
 }
 
+//
+bool isInBounds(int zeroIndex, string direction){
+    if(direction == "up"){
+        if(zeroIndex == 0 || zeroIndex == 1 || zeroIndex == 2)
+        {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    else if(direction =="down"){
+        if(zeroIndex == 6 || zeroIndex == 7 || zeroIndex == 8){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+    else if(direction =="right"){
+        if( (zeroIndex -2) %3 == 0){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+    else if(direction == "left"){
+        if(zeroIndex%3 == 0){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+    return false;
+}
+
 void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoType){
     int zeroIndex=0; 
     //finds the index that holds zero so that we can decide where to move
@@ -70,6 +108,91 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
             zeroIndex = i;
         }
     }
+
+    //making new puzzle that moves the blank space up
+    if(isInBounds(zeroIndex, "up")){
+        //NOTE TO SELF: check to see if the values correctly copy over
+        puzzleNode newPuzzle = chosenNode;
+        swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex-3));
+        if(algoType ==0){
+            newPuzzle.g_n += 1;
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        else if(algoType == 1){
+            newPuzzle.g_n +=1;
+            newPuzzle.h_n = CountingMisplacedTiles(newPuzzle.puzzle);
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        else if(algoType == 2){
+            newPuzzle.g_n +=1;
+            newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        pq.push(newPuzzle);
+    }
+
+    //making new puzzle that moves the blank space down
+    if(isInBounds(zeroIndex, "down")){
+        puzzleNode newPuzzle = chosenNode;
+        swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex+3));
+        if(algoType ==0){
+            newPuzzle.g_n += 1;
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        else if(algoType == 1){
+            newPuzzle.g_n +=1;
+            newPuzzle.h_n = CountingMisplacedTiles(newPuzzle.puzzle);
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        else if(algoType == 2){
+            newPuzzle.g_n +=1;
+            newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        pq.push(newPuzzle);
+    }
+
+    if(isInBounds(zeroIndex, "right")){
+        puzzleNode newPuzzle = chosenNode;
+        swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex+1));
+        if(algoType ==0){
+            newPuzzle.g_n += 1;
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        else if(algoType == 1){
+            newPuzzle.g_n +=1;
+            newPuzzle.h_n = CountingMisplacedTiles(newPuzzle.puzzle);
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        else if(algoType == 2){
+            newPuzzle.g_n +=1;
+            newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        pq.push(newPuzzle);
+    }
+
+    if(isInBounds(zeroIndex, "left")){
+        puzzleNode newPuzzle = chosenNode;
+        swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex-1));
+        if(algoType ==0){
+            newPuzzle.g_n += 1;
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        else if(algoType == 1){
+            newPuzzle.g_n +=1;
+            newPuzzle.h_n = CountingMisplacedTiles(newPuzzle.puzzle);
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        else if(algoType == 2){
+            newPuzzle.g_n +=1;
+            newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
+            newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
+        }
+        pq.push(newPuzzle);
+    }
+
+
 
 }
 
@@ -146,8 +269,8 @@ int main(){
     priority_queue<puzzleNode> pq; //chooses best node to expand
     queue<puzzleNode> orderExpanded; //keeps track of which node is expanded
     pq.push(newPuzzle); 
+    bool didFinish = false;
     int maxSize=0;
-    bool firstExpansionOccured =false;
     while(!pq.empty()){
         int tempSize = pq.size();
         maxSize = max(maxSize, tempSize);
@@ -159,6 +282,8 @@ int main(){
             cout << "Solution depth was" << temp.g_n << endl; //we can use g_n for solution depth bc cost of g_n is 1 
             cout << "Number of nodes expanded: " << orderExpanded.size() << endl;
             cout << "Max queue size: " << maxSize << endl;
+            didFinish = true;
+            break;
         }
         expandNode(temp,pq, algoInput);
         if(pq.size() != 0){
@@ -166,5 +291,11 @@ int main(){
         }
         
     }
+    if(didFinish == false){
+        cout << "No solution found\n";
+        cout << "";
+    }
+
+    return 0;
 
 }
