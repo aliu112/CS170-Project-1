@@ -419,10 +419,6 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
         newPuzzle.h_n = chosenNode.h_n;
         newPuzzle.f_n = chosenNode.f_n;
         swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex+1));
-
-        // printPuzzle(chosenNode.puzzle);
-        // cout << endl;
-        // printPuzzle(newPuzzle.puzzle);
         if(algoType == 1){
             newPuzzle.g_n += 1;
             newPuzzle.h_n=0;
@@ -494,7 +490,6 @@ int main(){
     //Chose a 1D array because it makes it easier for me to piece everything together
     puzzleNode newPuzzle;
     newPuzzle.puzzle = vector<int> (9);
-
     cout << "8-puzzle Solver Program\n";
     cout << "Please enter '1' for a default puzzle or '2' to make your own puzzle\n";
     
@@ -565,7 +560,7 @@ int main(){
             printTraceBack(orderExpanded);
             cout << "Goal state!\n";
             cout << "Solution depth was " << temp.g_n << endl; //we can use g_n for solution depth bc cost of g_n is 1 
-            cout << "Number of nodes expanded: " << orderExpanded.size() << endl;
+            cout << "Number of nodes expanded: " << orderExpanded.size()-1 << endl; //-1 because orderExpanded also has the initial state included 
             cout << "Max queue size: " << maxSize << endl;
             auto duration = duration_cast<microseconds>(stop-start);
             cout << "The algorithm ran for " << duration.count() << " microseconds\n";
@@ -578,7 +573,6 @@ int main(){
     }
     if(didFinish == false){
         cout << "No solution found\n";
-        cout << "";
     }
 
     return 0;
