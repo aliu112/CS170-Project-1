@@ -58,14 +58,13 @@ int CountingMisplacedTiles(vector<int> puzzle){
     int cost =0;
     for(int i=0; i<9; i++){ //checks how many tiles are out of place
         if(puzzle.at(i) != i+1){
-            if(puzzle.at(i) == 0) //if that misplaced tile is 0 don't increase cost because we don't count a misplaced zero for this heuristic
+            if( puzzle.at(i) != 0) //if that misplaced tile is 0 don't increase cost because we don't count a misplaced zero for this heuristic
             {
-                break;
+                ++cost;
             }
-            ++cost;
         }
     }
-    cout << "cost: " << cost << endl;
+    // cout<< "cost: " << cost << endl;
     return cost;
 }
 
@@ -253,6 +252,18 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
 
 }
 
+void printTraceBack(queue<puzzleNode> orderExpanded){
+    cout << "Starting puzzle: \n";
+    printPuzzle(orderExpanded.front().puzzle);
+    orderExpanded.pop();
+    while(!orderExpanded.empty())
+    {
+        cout << "The best state to expand with g(n) = " << orderExpanded.front().g_n << " and h(n) = " << orderExpanded.front().h_n << " is...\n";
+        printPuzzle(orderExpanded.front().puzzle);
+        orderExpanded.pop();
+    }
+    
+}
 
 
 
@@ -310,7 +321,7 @@ int main(){
     }
 
     cout << "Select algorithm: \n";
-    cout << "(1) Uniform Search Cost\n(2) Misplaced Tile Heuristic\n(3)Manhattan Distance Heuristic\n";
+    cout << "(1) Uniform Search Cost\n(2) Misplaced Tile Heuristic\n(3) Manhattan Distance Heuristic\n";
     int algoInput;
     cin >> algoInput;
     
@@ -331,6 +342,8 @@ int main(){
         if(CheckIfFinished(temp.puzzle)){
             //Function call to print order of the nodes selected by the algorithm 
             orderExpanded.push(temp);
+            printTraceBack(orderExpanded);
+            cout << "Goal state!\n";
             cout << "Solution depth was " << temp.g_n << endl; //we can use g_n for solution depth bc cost of g_n is 1 
             cout << "Number of nodes expanded: " << orderExpanded.size() << endl;
             cout << "Max queue size: " << maxSize << endl;
@@ -338,9 +351,7 @@ int main(){
             break;
         }
         expandNode(temp,pq, algoInput,visited);
-        if(pq.size() != 0){
-            orderExpanded.push(temp);
-        }
+        orderExpanded.push(temp);
         
     }
     if(didFinish == false){
