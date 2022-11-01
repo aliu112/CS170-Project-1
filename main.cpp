@@ -3,9 +3,11 @@
 #include <vector>
 #include <queue>
 #include <map>
+#include <chrono>
 #include <algorithm>
 
 using namespace std;
+using namespace std::chrono;
 
 //making struct to keep track of state which includes puzzle and costs of g(n) and h(n)
 struct puzzleNode{
@@ -350,7 +352,6 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
             zeroIndex = i;
         }
     }
-    // cout << zeroIndex << endl;
 
     //making new puzzle that moves the blank space up
     if(isInBounds(zeroIndex, "up")){
@@ -542,7 +543,7 @@ int main(){
     cout << "(1) Uniform Search Cost\n(2) Misplaced Tile Heuristic\n(3) Manhattan Distance Heuristic\n";
     int algoInput;
     cin >> algoInput;
-    
+    auto start = high_resolution_clock::now();
     //general search algo goes below
     //used below link to create min heap with priority queue so I could use it for selecting the lowest cost node
     //https://medium.com/@taohidulii/min-priority-queue-in-c-7e64bd01359c#:~:text=Save-,Min%20priority_queue%20in%20C%2B%2B,(returns%20the%20largest%20element).&text=Here%2C%20we're%20getting%20the,by%20applying%20some%20interesting%20tricks.
@@ -559,12 +560,15 @@ int main(){
         pq.pop();
         if(CheckIfFinished(temp.puzzle)){
             //Function call to print order of the nodes selected by the algorithm 
+            auto stop = high_resolution_clock::now();
             orderExpanded.push(temp);
             printTraceBack(orderExpanded);
             cout << "Goal state!\n";
             cout << "Solution depth was " << temp.g_n << endl; //we can use g_n for solution depth bc cost of g_n is 1 
             cout << "Number of nodes expanded: " << orderExpanded.size() << endl;
             cout << "Max queue size: " << maxSize << endl;
+            auto duration = duration_cast<microseconds>(stop-start);
+            cout << "The algorithm ran for " << duration.count() << " microseconds\n";
             didFinish = true;
             break;
         }
