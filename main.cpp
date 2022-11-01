@@ -19,7 +19,7 @@ struct puzzleNode{
     // as a resource to do so
     bool operator< (const puzzleNode & a) const 
     {
-        if(f_n == a.f_n) //if it's a tie, just pick the first node
+        if(f_n == a.f_n) //if it's a tie, just pick the lowest g(n)
         {
             return g_n > a.g_n;
         }else { //else pick the lowest cost node
@@ -48,9 +48,229 @@ bool CheckIfFinished(vector<int> puzzle){
     return isFinished; 
 }
 
-//Thining about hard coding it, can't think of a formula that would work for caluclating manhattan 
+//calculating manhattan distance by hard code
 int ManhattanDistance(vector<int> puzzle ){
-
+    int cost =0;
+    if(puzzle.at(0) != 1){
+        if(puzzle.at(0) == 2){
+            cost += 1; 
+        }
+        else if(puzzle.at(0) == 3)
+        {
+            cost +=2;
+        }
+        else if(puzzle.at(0) == 4){
+            cost +=1;
+        }
+        else if(puzzle.at(0) == 5){
+            cost += 2;
+        }
+        else if(puzzle.at(0) == 6){
+            cost += 3;
+        }
+        else if(puzzle.at(0) == 7){
+            cost += 2;
+        }
+        else if(puzzle.at(0) == 8){
+            cost += 3;
+        }
+    }
+    if( puzzle.at(1) != 2){
+         if(puzzle.at(1) == 1){
+            cost += 1; 
+        }
+        else if(puzzle.at(1) == 3)
+        {
+            cost +=1;
+        }
+        else if(puzzle.at(1) == 4){
+            cost +=2;
+        }
+        else if(puzzle.at(1) == 5){
+            cost += 1;
+        }
+        else if(puzzle.at(1) == 6){
+            cost += 2;
+        }
+        else if(puzzle.at(1) == 7){
+            cost += 3;
+        }
+        else if(puzzle.at(1) == 8){
+            cost += 2;
+        }
+    }
+    if( puzzle.at(2) != 3){
+         if(puzzle.at(2) == 1){
+            cost += 2; 
+        }
+        else if(puzzle.at(2) == 2)
+        {
+            cost += 1;
+        }
+        else if(puzzle.at(2) == 4){
+            cost += 3;
+        }
+        else if(puzzle.at(2) == 5){
+            cost += 2;
+        }
+        else if(puzzle.at(2) == 6){
+            cost += 1;
+        }
+        else if(puzzle.at(2) == 7){
+            cost += 4;
+        }
+        else if(puzzle.at(2) == 8){
+            cost += 3;
+        }
+    }
+    if( puzzle.at(3) != 4){
+         if(puzzle.at(3) == 1){
+            cost += 1; 
+        }
+        else if(puzzle.at(3) == 2)
+        {
+            cost += 2;
+        }
+        else if(puzzle.at(3) == 3){
+            cost += 3;
+        }
+        else if(puzzle.at(3) == 5){
+            cost += 1;
+        }
+        else if(puzzle.at(3) == 6){
+            cost += 2;
+        }
+        else if(puzzle.at(3) == 7){
+            cost += 1;
+        }
+        else if(puzzle.at(3) == 8){
+            cost += 2;
+        }
+    }
+    if( puzzle.at(4) != 5){
+         if(puzzle.at(4) == 1){
+            cost += 2; 
+        }
+        else if(puzzle.at(4) == 2)
+        {
+            cost +=1;
+        }
+        else if(puzzle.at(4) == 3){
+            cost +=2;
+        }
+        else if(puzzle.at(4) == 4){
+            cost += 1;
+        }
+        else if(puzzle.at(4) == 6){
+            cost += 1;
+        }
+        else if(puzzle.at(4) == 7){
+            cost += 2;
+        }
+        else if(puzzle.at(4) == 8){
+            cost += 1;
+        }
+    }
+    if( puzzle.at(5) != 6){
+         if(puzzle.at(5) == 1){
+            cost += 3; 
+        }
+        else if(puzzle.at(5) == 2)
+        {
+            cost +=2;
+        }
+        else if(puzzle.at(5) == 3){
+            cost +=1;
+        }
+        else if(puzzle.at(5) == 4){
+            cost += 2;
+        }
+        else if(puzzle.at(5) == 5){
+            cost += 1;
+        }
+        else if(puzzle.at(5) == 7){
+            cost += 3;
+        }
+        else if(puzzle.at(5) == 8){
+            cost += 2;
+        }
+    }
+    if( puzzle.at(6) != 7){
+         if(puzzle.at(6) == 1){
+            cost += 2; 
+        }
+        else if(puzzle.at(6) == 2)
+        {
+            cost += 3;
+        }
+        else if(puzzle.at(6) == 3){
+            cost += 4;
+        }
+        else if(puzzle.at(6) == 4){
+            cost += 1;
+        }
+        else if(puzzle.at(6) == 5){
+            cost += 2;
+        }
+        else if(puzzle.at(6) == 6){
+            cost += 3;
+        }
+        else if(puzzle.at(6) == 8){
+            cost += 1;
+        }
+    }
+    if( puzzle.at(7) != 8){
+         if(puzzle.at(7) == 1){
+            cost += 3; 
+        }
+        else if(puzzle.at(7) == 2)
+        {
+            cost += 2;
+        }
+        else if(puzzle.at(7) == 3){
+            cost += 3;
+        }
+        else if(puzzle.at(7) == 4){
+            cost += 2;
+        }
+        else if(puzzle.at(7) == 5){
+            cost += 1;
+        }
+        else if(puzzle.at(7) == 6){
+            cost += 2;
+        }
+        else if(puzzle.at(7) == 7){
+            cost += 1;
+        }
+    }
+    if( puzzle.at(8) != 0){
+         if(puzzle.at(8) == 1){
+            cost += 4; 
+        }
+        else if(puzzle.at(8) == 2)
+        {
+            cost += 3;
+        }
+        else if(puzzle.at(8) == 3){
+            cost +=2;
+        }
+        else if(puzzle.at(8) == 4){
+            cost += 3;
+        }
+        else if(puzzle.at(8) == 5){
+            cost += 2;
+        }
+        else if(puzzle.at(8) == 6){
+            cost += 1;
+        }
+        else if(puzzle.at(8) == 7){
+            cost += 2;
+        }
+        else if(puzzle.at(8) == 8){
+            cost += 1;
+        }
+    }
+    return cost;
 }
 
 //calcuating misplaced tiles heuristic
@@ -273,8 +493,6 @@ int main(){
     //Chose a 1D array because it makes it easier for me to piece everything together
     puzzleNode newPuzzle;
     newPuzzle.puzzle = vector<int> (9);
-    // cout << "g_n: " << newPuzzle.g_n  << "\nh_n: " << newPuzzle.h_n  << "\nf_n: " << newPuzzle.f_n << endl;
-    // cout <<"vector" << puzzle.size();
 
     cout << "8-puzzle Solver Program\n";
     cout << "Please enter '1' for a default puzzle or '2' to make your own puzzle\n";
