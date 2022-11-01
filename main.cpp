@@ -543,7 +543,7 @@ int main(){
     cout << "(1) Uniform Search Cost\n(2) Misplaced Tile Heuristic\n(3) Manhattan Distance Heuristic\n";
     int algoInput;
     cin >> algoInput;
-    auto start = high_resolution_clock::now();
+    auto start = high_resolution_clock::now(); // used https://www.geeksforgeeks.org/measure-execution-time-function-cpp/
     //general search algo goes below
     //used below link to create min heap with priority queue so I could use it for selecting the lowest cost node
     //https://medium.com/@taohidulii/min-priority-queue-in-c-7e64bd01359c#:~:text=Save-,Min%20priority_queue%20in%20C%2B%2B,(returns%20the%20largest%20element).&text=Here%2C%20we're%20getting%20the,by%20applying%20some%20interesting%20tricks.
