@@ -65,11 +65,13 @@ int CountingMisplacedTiles(vector<int> puzzle){
             ++cost;
         }
     }
+    cout << "cost: " << cost << endl;
     return cost;
 }
 
-//
+//checks to see moving in a certain direction is in bounds
 bool isInBounds(int zeroIndex, string direction){
+    //if you want to move up, it's only illegal to move upwards if your index is between 0-2
     if(direction == "up"){
         if(zeroIndex == 0 || zeroIndex == 1 || zeroIndex == 2)
         {
@@ -79,6 +81,7 @@ bool isInBounds(int zeroIndex, string direction){
             return true;
         }
     }
+    //if you want to move down, it's only illegal to move upwards if your index is between 6-8
     else if(direction =="down"){
         if(zeroIndex == 6 || zeroIndex == 7 || zeroIndex == 8){
             return false;
@@ -87,6 +90,7 @@ bool isInBounds(int zeroIndex, string direction){
             return true;
         }
     }
+    //if you want to mvoe right, it's only illegal to move right if your index -2 mod 3 is 0.
     else if(direction =="right"){
         if( (zeroIndex -2) %3 == 0){
             return false;
@@ -95,6 +99,8 @@ bool isInBounds(int zeroIndex, string direction){
             return true;
         }
     }
+    //if you want to mvoe right, it's only illegal to move right if your index mod 3 is 0
+    //noticed that the whole left row was a multiple of 3
     else if(direction == "left"){
         if(zeroIndex%3 == 0){
             return false;
@@ -115,7 +121,7 @@ void printPuzzle(vector<int> puzzle){
 
 
 void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoType, map<vector<int>,int> &visited){
-    visited[chosenNode.puzzle] = 1; // mark node as visited
+    visited[chosenNode.puzzle] = 1; // mark node as visited 
 
     int zeroIndex=0; 
     //finds the index that holds zero so that we can decide where to move
@@ -125,27 +131,27 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
             zeroIndex = i;
         }
     }
-    cout << zeroIndex << endl;
+    // cout << zeroIndex << endl;
 
     //making new puzzle that moves the blank space up
     if(isInBounds(zeroIndex, "up")){
-        //NOTE TO SELF: check to see if the values correctly copy over
         puzzleNode newPuzzle;
         newPuzzle.puzzle = chosenNode.puzzle;
         newPuzzle.g_n = chosenNode.g_n;
         newPuzzle.h_n = chosenNode.h_n;
         newPuzzle.f_n = chosenNode.f_n;
         swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex-3));
-        if(algoType ==0){
+        if(algoType ==1){
             newPuzzle.g_n += 1;
+            newPuzzle.h_n=0;
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        else if(algoType == 1){
+        else if(algoType == 2){
             newPuzzle.g_n +=1;
             newPuzzle.h_n = CountingMisplacedTiles(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        else if(algoType == 2){
+        else if(algoType == 3){
             newPuzzle.g_n +=1;
             newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
@@ -165,18 +171,17 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
         newPuzzle.f_n = chosenNode.f_n;
         swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex+3));
 
-        // cout << "IN DOWN IF STATEMENT\n" << "h_cost: " << newPuzzle.h_n << "\ng_cost: " << newPuzzle.g_n <<"\n";
-        // printPuzzle(newPuzzle.puzzle);
-        if(algoType ==0){
+        if(algoType == 1){
             newPuzzle.g_n += 1;
+            newPuzzle.h_n=0;
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        else if(algoType == 1){
+        else if(algoType == 2){
             newPuzzle.g_n +=1;
             newPuzzle.h_n = CountingMisplacedTiles(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        else if(algoType == 2){
+        else if(algoType == 3){
             newPuzzle.g_n +=1;
             newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
@@ -186,6 +191,7 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
         }
     }
 
+    //making new puzzle that moves the blank space right
     if(isInBounds(zeroIndex, "right")){
         puzzleNode newPuzzle;
         newPuzzle.puzzle = chosenNode.puzzle;
@@ -194,19 +200,20 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
         newPuzzle.f_n = chosenNode.f_n;
         swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex+1));
 
-        printPuzzle(chosenNode.puzzle);
-        cout << endl;
-        printPuzzle(newPuzzle.puzzle);
-        if(algoType ==0){
+        // printPuzzle(chosenNode.puzzle);
+        // cout << endl;
+        // printPuzzle(newPuzzle.puzzle);
+        if(algoType == 1){
             newPuzzle.g_n += 1;
+            newPuzzle.h_n=0;
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        else if(algoType == 1){
+        else if(algoType == 2){
             newPuzzle.g_n +=1;
             newPuzzle.h_n = CountingMisplacedTiles(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        else if(algoType == 2){
+        else if(algoType == 3){
             newPuzzle.g_n +=1;
             newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
@@ -216,6 +223,7 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
         }
     }
 
+    //making new puzzle that moves the blank space left
     if(isInBounds(zeroIndex, "left")){
         puzzleNode newPuzzle;
         newPuzzle.puzzle = chosenNode.puzzle;
@@ -223,16 +231,17 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
         newPuzzle.h_n = chosenNode.h_n;
         newPuzzle.f_n = chosenNode.f_n;
         swap(newPuzzle.puzzle.at(zeroIndex), newPuzzle.puzzle.at(zeroIndex-1));
-        if(algoType ==0){
+        if(algoType ==1){
             newPuzzle.g_n += 1;
+            newPuzzle.h_n=0;
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        else if(algoType == 1){
+        else if(algoType ==2){
             newPuzzle.g_n +=1;
             newPuzzle.h_n = CountingMisplacedTiles(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
         }
-        else if(algoType == 2){
+        else if(algoType == 3){
             newPuzzle.g_n +=1;
             newPuzzle.h_n = ManhattanDistance(newPuzzle.puzzle);
             newPuzzle.f_n = newPuzzle.g_n + newPuzzle.h_n;
@@ -241,8 +250,6 @@ void expandNode(puzzleNode chosenNode, priority_queue<puzzleNode> &pq, int algoT
             pq.push(newPuzzle);
         }
     }
-
-
 
 }
 
